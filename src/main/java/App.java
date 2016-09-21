@@ -1,14 +1,63 @@
-// import java.util.HashMap;
-// import java.util.Map;
-// import spark.ModelAndView;
-// import spark.template.velocity.VelocityTemplateEngine;
-// import static spark.Spark.*;
-//
-// public class App {
-//   public static void main(String[] args) {
-//     staticFileLocation("/public");
-//     String layout = "templates/layout.vtl";
-//
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import spark.ModelAndView;
+import spark.template.velocity.VelocityTemplateEngine;
+import static spark.Spark.*;
+
+public class App {
+  public static void main(String[] args) {
+    staticFileLocation("/public");
+    String layout = "templates/layout.vtl";
+
+    get("/", (request,response) ->{
+      Map<String, Object> model = new HashMap<String, Object>();
+      model.put("persons", Person.all());
+      model.put("template","templates/index.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    post("/movie-form", (request, repsonse)->{
+      Map<String, Object> model = new HashMap<String, Object>();
+      Person person = new Person(request.queryParams("user-name"));
+      person.save();
+      model.put("person", person);
+      model.put("template","templates/movie-form.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    post("/person/:id", (request, response) -> {
+    Map<String, Object> model = new HashMap<String, Object>();
+    Person person = Person.find(Integer.parseInt(request.params(":id")));
+    Movie movie1 = new Movie(request.queryParams("movie1"), person.getId());
+    movie1.save();
+    Movie movie2 = new Movie(request.queryParams("movie2"), person.getId());
+    movie2.save();
+    Movie movie3 = new Movie(request.queryParams("movie3"), person.getId());
+    movie3.save();
+    model.put("person",person);
+    model.put("personMovies",person.getMovies());
+    model.put("template","templates/person.vtl");
+    return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/person/:id", (request, response) -> {
+    Map<String, Object> model = new HashMap<String, Object>();
+    Person person = Person.find(Integer.parseInt(request.params(":id")));
+    model.put("person",person);
+    model.put("personMovies",person.getMovies());
+    model.put("template","templates/person.vtl");
+    return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+  }
+}
+
+
+
+
+
 //     get("/", (request, response) -> {
 //       Map<String, Object> model = new HashMap<String, Object>();
 //       model.put("template", "templates/index.vtl");
