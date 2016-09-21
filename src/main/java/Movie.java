@@ -9,7 +9,7 @@ public class Movie {
   private int personId;
   private String description;
 
-  public Movie(String _title, int personId){
+  public Movie(String _title, int _personId){
     title = _title;
     personId = _personId;
   }
@@ -27,9 +27,20 @@ public class Movie {
   }
 
   public static List<Movie> all() {
-  String sql = "SELECT id, title, personId, description FROM movies";
+  String sql = "SELECT id, title, personId FROM movies";
   try(Connection con = DB.sql2o.open()) {
     return con.createQuery(sql).executeAndFetch(Movie.class);
+    }
+  }
+
+  public void save() {
+    try(Connection con= DB.sql2o.open()){
+      String sql = "INSERT INTO movies(title, personId) VALUES (:title, :personId)";
+      this.id = (int) con.createQuery(sql, true)
+        .addParameter("title", this.title)
+        .addParameter("personId", this.personId)
+        .executeUpdate()
+        .getKey();
     }
   }
 
@@ -40,6 +51,17 @@ public class Movie {
         .addParameter("id", _id)
         .executeAndFetchFirst(Movie.class);
       return movie;
+    }
+  }
+
+  @Override
+  public boolean equals(Object otherMovie){
+    if(!(otherMovie instanceof Movie)){
+      return false;
+    }else {
+      Movie newMovie = (Movie) otherMovie;
+      return this.getTitle().equals(newMovie.getTitle()) &&
+              this.getPersonId() == newMovie.getPersonId();
     }
   }
 
