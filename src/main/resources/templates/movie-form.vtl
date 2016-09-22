@@ -1,15 +1,26 @@
-<h1>Please enter your favorite movies:</h1>
+<h1>Please enter favorite movies for $person.getName():</h1>
 <div class="jumbotron">
+
+  <ul>
+    #foreach($movie in $person.getMovies())
+    <form  action="/person/$person.getId()/movie/$movie.getId()/delete-movie-success" method="post">
+      <li>$movie.getTitle():<br>
+        Description: $movie.getDescription()<br>
+        Rating: $movie.getStars() Stars <br>
+      </li>
+      <button class="btn btn-danger" type="submit" name="button">Delete</button>
+      <a href="/person/$person.getId()/movie/$movie.getId()">
+        <div class="btn btn-primary">
+        Add Info
+        </div>
+      </a>
+    </form>
+    #end
+  </ul>
+
   <form action="/person/$person.getId()" method="post">
-    <label for="movie1">What's your favorite movie?</label>
-    <input id="movie1" name="movie1" class="form-control" type="text" placeholder="Movie 1"required="">
-
-    <label for="movie2">And your second favorite?</label>
-    <input id="movie2" name="movie2" class="form-control" type="text" placeholder="Movie 2" required="">
-
-    <label for="movie3">And your third favorite?</label>
-    <input id="movie3" name="movie3" class="form-control" type="text" placeholder="Movie 3" required="">
-
+    <label for="movie">What's your favorite movie?</label>
+    <input id="movie" name="movie" class="form-control" type="text" placeholder="New Movie"required="">
     <button type="submit" class="btn btn-danger">Submit</button>
   </form>
 </div>

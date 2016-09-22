@@ -18,7 +18,7 @@ public class App {
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
-    post("/movie-form", (request, repsonse)->{
+    post("/person/new", (request, repsonse)->{
       Map<String, Object> model = new HashMap<String, Object>();
       Person person = new Person(request.queryParams("user-name"));
       person.save();
@@ -27,18 +27,22 @@ public class App {
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
+    // post("/movie-form", (request, repsonse)->{
+    //   Map<String, Object> model = new HashMap<String, Object>();
+    //   Person person = new Person(request.queryParams("user-name"));
+    //   person.save();
+    //   model.put("person", person);
+    //   model.put("template","templates/movie-form.vtl");
+    //   return new ModelAndView(model, layout);
+    // }, new VelocityTemplateEngine());
+
     post("/person/:id", (request, response) -> {
     Map<String, Object> model = new HashMap<String, Object>();
     Person person = Person.find(Integer.parseInt(request.params(":id")));
-    Movie movie1 = new Movie(request.queryParams("movie1"), person.getId());
-    movie1.save();
-    Movie movie2 = new Movie(request.queryParams("movie2"), person.getId());
-    movie2.save();
-    Movie movie3 = new Movie(request.queryParams("movie3"), person.getId());
-    movie3.save();
+    Movie movie = new Movie(request.queryParams("movie"), person.getId());
+    movie.save();
     model.put("person",person);
-    model.put("personMovies",person.getMovies());
-    model.put("template","templates/person.vtl");
+    model.put("template","templates/movie-form.vtl");
     return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
@@ -47,122 +51,54 @@ public class App {
     Person person = Person.find(Integer.parseInt(request.params(":id")));
     model.put("person",person);
     model.put("personMovies",person.getMovies());
-    model.put("template","templates/person.vtl");
+    model.put("template","templates/movie-form.vtl");
     return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
     post("/person/:id/delete-success", (request, response) -> {
-      HashMap<String, Object> model = new HashMap<String, Object>();
-      Person person = Person.find(Integer.parseInt(request.params(":id")));
-      model.put("person", person);
-      person.deleteMovies();
-      person.delete();
-      model.put("template","templates/delete-success.vtl");
-      return new ModelAndView(model, layout);
-      }, new VelocityTemplateEngine());
+    Map<String, Object> model = new HashMap<String, Object>();
+    Person person = Person.find(Integer.parseInt(request.params(":id")));
+    model.put("person", person);
+    person.deleteMovies();
+    person.delete();
+    model.put("template","templates/delete-success.vtl");
+    return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
 
-      post("/movie/:id/delete-movie-success", (request, response) -> {
-        HashMap<String, Object> model = new HashMap<String, Object>();
-        Movie title = Movie.find(Integer.parseInt(request.params(":id")));
-        model.put("title", title);
-        title.delete();
-        model.put("template","templates/delete-movie-success.vtl");
-        return new ModelAndView(model, layout);
-        }, new VelocityTemplateEngine());
+    post("/person/:person_id/movie/:id/delete-movie-success", (request, response) -> {
+    Map<String, Object> model = new HashMap<String, Object>();
+    Movie title = Movie.find(Integer.parseInt(request.params(":id")));
+    model.put("titles", title);
+    title.delete();
+    model.put("template","templates/delete-movie-success.vtl");
+    return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/person/:person_id/movie/:id", (request, response)->{
+    Map<String, Object> model = new HashMap<String, Object>();
+    Movie movie = Movie.find(Integer.parseInt(request.params(":id")));
+    Person person = Person.find(Integer.parseInt(request.params(":person_id")));
+    model.put("movie", movie);
+    model.put("person", person);
+    model.put("template", "templates/movie.vtl");
+    return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    post("/person/:id/info-success", (request, response)->{
+    Map<String, Object> model = new HashMap<String, Object>();
+    Person person = Person.find(Integer.parseInt(request.params(":id")));
+    Movie movie = Movie.find(Integer.parseInt(request.queryParams("movie")));
+    String description = request.queryParams("description");
+    String stars = request.queryParams("stars");
+    movie.setDescription(description);
+    movie.setStars(stars);
+    movie.updateDescription();
+    movie.updateStars();
+    model.put("movie", movie);
+    model.put("person", person);
+    model.put("template", "templates/movie-form.vtl");
+    return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
 
   }
 }
-
-
-
-
-
-//     get("/", (request, response) -> {
-//       Map<String, Object> model = new HashMap<String, Object>();
-//       model.put("template", "templates/index.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//
-//     get("tasks/new", (request, response) -> {
-//       Map<String, Object> model = new HashMap<String, Object>();
-//       model.put("template", "templates/task-form.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//
-//     get("/tasks", (request, response) -> {
-//       Map<String, Object> model = new HashMap<String, Object>();
-//       model.put("tasks", Task.all());
-//       model.put("template", "templates/tasks.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//
-//     post("/tasks", (request, response) -> {
-//       Map<String, Object> model = new HashMap<String, Object>();
-//
-//       Category category = Category.find(Integer.parseInt(request.queryParams("categoryId")));
-//
-//       String description = request.queryParams("description");
-//       Task newTask = new Task(description);
-//
-//       category.addTask(newTask);
-//
-//       model.put("category", category);
-//       model.put("template", "templates/category-tasks-success.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//
-//     get("/tasks/:id", (request, response) -> {
-//       HashMap<String, Object> model = new HashMap<String, Object>();
-//       Task task = Task.find(Integer.parseInt(request.params(":id")));
-//       model.put("task", task);
-//       model.put("template", "templates/task.vtl");
-//       return new ModelAndView(model, layout);
-//     },new VelocityTemplateEngine());
-//
-//     get("/categories/new", (request, response) -> {
-//       Map<String, Object> model = new HashMap<String, Object>();
-//       model.put("template", "templates/category-form.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//
-//     post("/categories", (request, response) -> {
-//       Map<String, Object> model = new HashMap<String, Object>();
-//       String name = request.queryParams("name");
-//       Category newCategory = new Category(name);
-//       model.put("template", "templates/category-success.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//
-//     get("/categories", (request, response) -> {
-//       Map<String, Object> model = new HashMap<String, Object>();
-//       model.put("categories", Category.all());
-//       model.put("template", "templates/categories.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//
-//     get("/categories/:id", (request, response) -> {
-//       Map<String, Object> model = new HashMap<String, Object>();
-//       Category category = Category.find(Integer.parseInt(request.params(":id")));
-//       model.put("category", category);
-//       model.put("template", "templates/category.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//
-//     get("/categories/:id/tasks/new", (request, response) -> {
-//       Map<String, Object> model = new HashMap<String, Object>();
-//       Category category = Category.find(Integer.parseInt(request.params(":id")));
-//       model.put("category", category);
-//       model.put("template", "templates/category-tasks-form.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//     post("/categories/:category_id/tasks/:id/delete", (request, response) -> {
-//       HashMap<String, Object> model = new HashMap<String, Object>();
-//       Task task = Task.find(Integer.parseInt(request.params("id")));
-//       Category category = Category.find(task.getCategoryId());
-//       task.delete();
-//       model.put("category", category);
-//       model.put("template", "templates/category.vtl");
-//       return new ModelAndView(model, layout);
-//     }, new VelocityTemplateEngine());
-//   }
-// }

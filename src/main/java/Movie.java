@@ -8,6 +8,7 @@ public class Movie {
   private int id;
   private int personId;
   private String description;
+  private String stars;
 
   public Movie(String _title, int _personId){
     title = _title;
@@ -26,6 +27,23 @@ public class Movie {
     return personId;
   }
 
+  public void setDescription(String _description) {
+    this.description = _description;
+  }
+
+  public void setStars(String _stars) {
+    this.stars = _stars;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public String getStars() {
+    return stars;
+  }
+
+
   public static List<Movie> all() {
   String sql = "SELECT id, title, personId FROM movies";
   try(Connection con = DB.sql2o.open()) {
@@ -35,7 +53,7 @@ public class Movie {
 
   public void save() {
     try(Connection con= DB.sql2o.open()){
-      String sql = "INSERT INTO movies(title, personId) VALUES (:title, :personId)";
+      String sql = "INSERT INTO movies(title, personId, description, stars) VALUES (:title, :personId,'', 'No')";
       this.id = (int) con.createQuery(sql, true)
         .addParameter("title", this.title)
         .addParameter("personId", this.personId)
@@ -58,6 +76,26 @@ public class Movie {
     try(Connection con = DB.sql2o.open()) {
       String sql = "DELETE FROM movies WHERE id = :id";
       con.createQuery(sql)
+        .addParameter("id", this.id)
+        .executeUpdate();
+    }
+  }
+
+  public void updateDescription() {
+    try(Connection con= DB.sql2o.open()){
+      String sql = "UPDATE movies SET description=:description WHERE id=:id ";
+      con.createQuery(sql)
+        .addParameter("description", this.description)
+        .addParameter("id", this.id)
+        .executeUpdate();
+    }
+  }
+
+  public void updateStars() {
+    try(Connection con= DB.sql2o.open()){
+      String sql = "UPDATE movies SET stars=:stars WHERE id=:id ";
+      con.createQuery(sql)
+        .addParameter("stars", this.stars)
         .addParameter("id", this.id)
         .executeUpdate();
     }
