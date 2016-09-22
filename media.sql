@@ -36,7 +36,9 @@ SET default_with_oids = false;
 CREATE TABLE movies (
     id integer NOT NULL,
     title character varying,
-    personid integer
+    personid integer,
+    description character varying,
+    stars character varying
 );
 
 
@@ -114,19 +116,7 @@ ALTER TABLE ONLY persons ALTER COLUMN id SET DEFAULT nextval('persons_id_seq'::r
 -- Data for Name: movies; Type: TABLE DATA; Schema: public; Owner: Guest
 --
 
-COPY movies (id, title, personid) FROM stdin;
-1	octopussy	4
-2	goldfinger	4
-3	casino royale	4
-4	asdf	6
-5	asf	6
-6	asf	6
-7	jfasj;lksjdflkj	7
-8	lkjasldfkjlasdkjf	7
-9	asdfasjflkjsldkfjklasjflkjaksjflkjsakldjfklasjfkjsaljfsdjfjsdpjf	7
-10		8
-11		8
-12		8
+COPY movies (id, title, personid, description, stars) FROM stdin;
 \.
 
 
@@ -134,7 +124,7 @@ COPY movies (id, title, personid) FROM stdin;
 -- Name: movies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Guest
 --
 
-SELECT pg_catalog.setval('movies_id_seq', 12, true);
+SELECT pg_catalog.setval('movies_id_seq', 74, true);
 
 
 --
@@ -142,16 +132,6 @@ SELECT pg_catalog.setval('movies_id_seq', 12, true);
 --
 
 COPY persons (id, name) FROM stdin;
-1	TestManJones
-2	jeremy
-3	nhat
-4	bond, james bond
-5	jimmy
-6	nate
-7	hulu
-8	
-9	
-10	
 \.
 
 
@@ -159,7 +139,7 @@ COPY persons (id, name) FROM stdin;
 -- Name: persons_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Guest
 --
 
-SELECT pg_catalog.setval('persons_id_seq', 10, true);
+SELECT pg_catalog.setval('persons_id_seq', 41, true);
 
 
 --
