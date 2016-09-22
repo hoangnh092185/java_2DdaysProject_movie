@@ -54,6 +54,23 @@ public class Person {
     }
   }
 
+public void delete(){
+  try(Connection con = DB.sql2o.open()) {
+    String sql = "DELETE FROM persons WHERE id = :id";
+    con.createQuery(sql)
+      .addParameter("id", this.id)
+      .executeUpdate();
+  }
+}
+
+public void deleteMovies(){
+  for(Movie movie : this.getMovies()){
+    movie.delete();
+    }
+  }
+
+
+
   @Override
   public boolean equals(Object otherPerson){
     if(!(otherPerson instanceof Person)){

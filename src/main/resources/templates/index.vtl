@@ -3,7 +3,10 @@
   #if ($persons.size() > 0)
   <ul>
     #foreach($person in $persons)
-      <li><a href="/person/$person.getId()">$person.getName()</a></li>
+      <form action="/person/$person.getId()/delete-success" method ="post">
+        <li><a href="/person/$person.getId()">$person.getName()</a></li>
+        <button class="btn btn-danger">Delete</button>
+      </form>
     #end
   </ul>
   #else
@@ -16,7 +19,7 @@
   <h3>Create New User</h3>
   <form action="/movie-form" method="post">
     <label for="user-name">What is your name?</label>
-    <input id="user-name" name="user-name" class="form-control" type="text">
+    <input id="user-name" name="user-name" class="form-control" type="text" placeholder="Name" required="">
     <button type="submit" class="btn btn-danger">Submit</button>
   </form>
 </div>

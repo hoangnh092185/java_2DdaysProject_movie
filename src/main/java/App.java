@@ -51,6 +51,25 @@ public class App {
     return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
+    post("/person/:id/delete-success", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Person person = Person.find(Integer.parseInt(request.params(":id")));
+      model.put("person", person);
+      person.deleteMovies();
+      person.delete();
+      model.put("template","templates/delete-success.vtl");
+      return new ModelAndView(model, layout);
+      }, new VelocityTemplateEngine());
+
+      post("/movie/:id/delete-movie-success", (request, response) -> {
+        HashMap<String, Object> model = new HashMap<String, Object>();
+        Movie title = Movie.find(Integer.parseInt(request.params(":id")));
+        model.put("title", title);
+        title.delete();
+        model.put("template","templates/delete-movie-success.vtl");
+        return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
   }
 }
 

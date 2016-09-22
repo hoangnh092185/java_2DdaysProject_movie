@@ -67,4 +67,15 @@ public class PersonTest{
     assertEquals(newPerson1.getMovies().get(0), newMovie1);
   }
 
+@Test
+  public void delete_removesPersonsFromDatabase_true() {
+    Person testPerson = new Person ("testMan");
+    testPerson.save();
+    int testPersonId = testPerson.getId();
+    testPerson.delete();
+    assertEquals(null, Person.find(testPersonId));
+  }
+
+
+
 }
